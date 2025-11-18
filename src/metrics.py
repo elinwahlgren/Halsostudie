@@ -2,18 +2,35 @@ import numpy as np
 from math import sqrt
 from scipy import stats
 
+class HelthAnalyser: 
+    def __init__ (self, df):
+        self.df = df
 
-def analys(df):
-    return (df[["age", "weight", "height", "systolic_bp", "cholesterol"]]
-         .agg(["mean", "median", "min", "max"]
-              ).round(2))
+    def analys(self, df):
+        return (df[["age", "weight", "height", "systolic_bp", "cholesterol"]]
+            .agg(["mean", "median", "min", "max"]
+                ).round(2))
     
+    def smoker(self, df):
+        return df.groupby("smoker", observed=True)["systolic_bp"].agg(
+            observations = ("count"),
+            proportions = ("mean")
+        ).reset_index()
+    
+    def sick_df (self, df):
+        df = df[df["disease"] == 1]
+        return df
+    
+    def sick_sex(self, df):
+        return df.groupby("sex" , observed=True).agg(
+            observations = ("disease", "count"),
+            mean_bp= ("systolic_bp", "mean"), 
+            mean_cholesterol = ("cholesterol", "mean"),
+            mean_age = ("age", "mean"),
+            weight_mean = ("weight", "mean"),
+            smoker_count=("smoker", lambda x: (x == "Yes").sum())
+        ).reset_index()
 
-def smoke_bloodpresure(df):
-    return df.groupby("smoker", observed=True)["systolic_bp"].agg(
-        observations = ("count"),
-        proportions = ("mean")
-    ).reset_index()
 
 def ci_mean_normal(x):
     """
