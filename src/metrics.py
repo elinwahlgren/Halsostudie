@@ -60,7 +60,6 @@ def ci_mean_bootstrap(x, B= 5000, confidence = 0.95):
     lo, hi = np.percentile(boot_means, [100*alpha, 100*(1 - alpha)])
     return float(lo), float(hi), float(np.mean(x))
 
-
 def covers_true_mean(df, mean_bp, method = "normal", n=40, trials=200):
     hits = 0
     for _ in range(trials):
