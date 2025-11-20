@@ -6,8 +6,14 @@ class HelthAnalyser:
     def __init__ (self, df):
         self.df = df
 
+    def add_columns(self, new_df):
+        new_df = new_df.copy()
+        new_df["height_m"] = new_df["height"]/100
+        new_df["BMI"] = new_df["weight"]/(new_df["height_m"]**2)
+        return new_df
+    
     def analys(self, df):
-        return (df[["age", "weight", "height", "systolic_bp", "cholesterol"]]
+        return (df[["age", "weight", "height", "systolic_bp", "cholesterol", "BMI"]]
             .agg(["mean", "median", "min", "max"]
                 ).round(2))
     
@@ -17,19 +23,28 @@ class HelthAnalyser:
             proportions = ("mean")
         ).reset_index()
     
-    def sick_df (self, df):
-        df = df[df["disease"] == 1]
-        return df
+    def  numeric_variables(self, df):
+        df_num = df.copy() 
+        df_num["sex"] = df_num["sex"].map({"M": 1, "F": 0})
+        df_num = df_num.rename(columns={"sex": "male"})
+        df_num["smoker"] = df_num["smoker"].map({"Yes": 1, "No": 0})
+        return df_num 
     
-    def sick_sex(self, df):
-        return df.groupby("sex" , observed=True).agg(
-            observations = ("disease", "count"),
-            mean_bp= ("systolic_bp", "mean"), 
-            mean_cholesterol = ("cholesterol", "mean"),
-            mean_age = ("age", "mean"),
-            weight_mean = ("weight", "mean"),
-            smoker_count=("smoker", lambda x: (x == "Yes").sum())
-        ).reset_index()
+    # def sick_df (self, df):
+    #     df = df[df["disease"] == 1]
+    #     return df
+    
+    # def sick_sex(self, df):
+    #     return df.groupby("sex" , observed=True).agg(
+    #         observations = ("disease", "count"),
+    #         mean_bp= ("systolic_bp", "mean"), 
+    #         mean_cholesterol = ("cholesterol", "mean"),
+    #         mean_age = ("age", "mean"),
+    #         weight_mean = ("weight", "mean"),
+    #         smoker_count=("smoker", lambda x: (x == "Yes").sum())
+    #     ).reset_index()
+    
+
 
 
 def ci_mean_normal(x):
