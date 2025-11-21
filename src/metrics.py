@@ -37,7 +37,7 @@ class HelthAnalyser:
         if missing_cols: 
             raise KeyError (f" Följande kolumner saknas {missing_cols}")
         
-        return (df[cols].agg(["mean", "median", "min", "max"]).round(2))
+        return (df[required_cols].agg(["mean", "median", "min", "max"]).round(2))
     
     def smoker(self, df):
         """
