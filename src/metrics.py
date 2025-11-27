@@ -85,7 +85,7 @@ def ci_mean_normal(numpy_array):
     se = s/sqrt(n)
 
     z_critical = 1.96
-    half_width = z_critical + se
+    half_width = z_critical * se
     lo, hi = mean_value - half_width, mean_value + half_width
     return lo, hi, mean_value, s, n, se
 
